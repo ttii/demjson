@@ -3,7 +3,7 @@
 
 """ A JSON data encoder and decoder.
 Create by Toby From China. 2024-9
-Modified based on the dmeranda/demjson last version, support Python3.10+, without installation, directly put this file into the project reference can be used:
+Modified based on the dmeranda/demjson last version(2.2.4) so this version is 2.2.5 ^o^, support Python3.10+, without installation, directly put this file into the project reference can be used:
 
 resp_obj = demjson.encode(resp)
 resp = demjson.decode(resp_obj)
@@ -11,15 +11,10 @@ resp = demjson.decode(resp_obj)
 
 # ----------------------------------------------------------------------
 
+from collections import namedtuple as _namedtuple
+
 # Set demjson version
-try:
-    from collections import namedtuple as _namedtuple
-
-    __version_info__ = _namedtuple('version_info', ['major', 'minor', 'micro'])(*__version_info__)
-except ImportError:
-    raise ImportError("demjson %s requires a Python 2.6 or later" % __version__)
-
-version, version_info = __version__, __version_info__
+version = (2, 2, 5)
 
 # Determine Python version
 _py_major, _py_minor = None, None
