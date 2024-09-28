@@ -156,7 +156,7 @@ def determine_float_limits(number_type = float):
         minexp, maxexp = None, None
 
         for expsign in ('+', '-'):
-            minv = 0;
+            minv = 0
             maxv = 10
             # First find order of magnitude of exponent limit
             while True:
@@ -235,7 +235,7 @@ class _undefined_class(object):
     def __str__(self):
         return 'undefined'
 
-    def __nonzero__(self):
+    def __bool__(self):
         return False
 
 
@@ -256,13 +256,13 @@ del _undefined_class
 
 def _nonnumber_float_constants():
     """Try to return the Nan, Infinity, and -Infinity float values.
-    
+
     This is necessarily complex because there is no standard
     platform-independent way to do this in Python as the language
     (opposed to some implementation of it) doesn't discuss
     non-numbers.  We try various strategies from the best to the
     worst.
-    
+
     If this Python interpreter uses the IEEE 754 floating point
     standard then the returned values will probably be real instances
     of the 'float' type.  Otherwise a custom class object is returned
@@ -934,7 +934,7 @@ class utf32(codecs.CodecInfo):
                     pass
             else:
                 chars.append(helpers.safe_chr(n))
-        return (u''.join(chars), num_bytes)
+        return (''.join(chars), num_bytes)
 
     @staticmethod
     def utf32le_decode(obj, errors = 'strict'):
@@ -955,10 +955,10 @@ def _make_unsafe_string_chars():
     import unicodedata
     unsafe = []
     for c in [chr(i) for i in range(0x100)]:
-        if c == u'"' or c == u'\\' \
+        if c == '"' or c == '\\' \
                 or unicodedata.category(c) in ['Cc', 'Cf', 'Zl', 'Zp']:
             unsafe.append(c)
-    return u''.join(unsafe)
+    return ''.join(unsafe)
 
 
 class helpers(object):
@@ -1036,7 +1036,7 @@ class helpers(object):
         """Determines if the given character is a Unicode space character"""
         if not isinstance(c, str):
             c = str(c)
-        if c in u' \t\n\r\f\v':
+        if c in ' \t\n\r\f\v':
             return True
         import unicodedata
         return unicodedata.category(c) == 'Zs'
@@ -1053,7 +1053,7 @@ class helpers(object):
         Unicode characters in the Zl or Zp categories.
 
         """
-        return c in u'\r\n\u2028\u2029'
+        return c in '\r\n\u2028\u2029'
 
     @staticmethod
     def char_is_identifier_leader(c):
@@ -1067,7 +1067,7 @@ class helpers(object):
         """Determines if the character may be part of a JavaScript
         identifier.
         """
-        return c.isalnum() or c in u'_$\u200c\u200d'
+        return c.isalnum() or c in '_$\u200c\u200d'
 
     @staticmethod
     def extend_and_flatten_list_with_sep(orig_seq, extension_seq, separator = ''):
@@ -1102,7 +1102,7 @@ class helpers(object):
         # Python3 conversion in which filter() will be transformed
         # into a list rather than a string.
         if not isinstance(txt2, str):
-            txt2 = u''.join(txt2)
+            txt2 = ''.join(txt2)
         return txt2
 
     @staticmethod
@@ -1251,10 +1251,10 @@ class helpers(object):
             unitxt, numbytes = cdk.decode(txt, **cdk_kw)  # DO THE DECODE HERE!
 
             # Remove BOM if present
-            if len(unitxt) > 0 and unitxt[0] == u'\uFEFF':
+            if len(unitxt) > 0 and unitxt[0] == '\uFEFF':
                 bom = cdk.encode(unitxt[0])[0]
                 unitxt = unitxt[1:]
-            elif len(unitxt) > 0 and unitxt[0] == u'\uFFFE':  # Reversed BOM
+            elif len(unitxt) > 0 and unitxt[0] == '\uFFFE':  # Reversed BOM
                 raise UnicodeDecodeError(cdk.name, txt, 0, 0, "Wrong byte order, found reversed BOM U+FFFE")
             else:
                 bom = None
@@ -1668,7 +1668,7 @@ class buffered_stream(object):
         self.rewind()
         self.__codec = None
         self.__bom = None
-        self.__rawbuf = u''
+        self.__rawbuf = ''
         self.__cmax = 0  # max number of chars in input
         try:
             decoded = helpers.unicode_decode(txt, encoding)
@@ -2167,7 +2167,7 @@ class JSONDecodeError(JSONError):
 
 class JSONDecodeHookError(JSONDecodeError):
     """An exception that occured within a decoder hook.
-    
+
     The original exception is available in the 'hook_exception' attribute.
     """
 
@@ -2191,7 +2191,7 @@ class JSONEncodeError(JSONError):
 
 class JSONEncodeHookError(JSONEncodeError):
     """An exception that occured within an encoder hook.
-    
+
     The original exception is available in the 'hook_exception' attribute.
     """
 
@@ -2807,7 +2807,7 @@ def smart_sort_transform(key):
     zero = ord('0')
     if not key:
         key = ''
-    elif isinstance(key, (int)):
+    elif isinstance(key, int):
         key = numfmt % key
     elif isinstance(key, str):
         keylen = len(key)
@@ -2842,10 +2842,8 @@ except ImportError:
     _OrderedDict = None
 
 
-class json_options(object):
+class json_options(object, metaclass = _behaviors_metaclass):
     """Options to determine how strict the decoder or encoder should be."""
-
-    __metaclass__ = _behaviors_metaclass
     _behavior_values = (ALLOW, WARN, FORBID)
     _behaviors = (
         ("all_numeric_signs",
@@ -2931,7 +2929,7 @@ class json_options(object):
                              'max_items_per_line',
                              'py2str_encoding']
 
-        # self.strictness = STRICTNESS_WARN
+        self.strictness = STRICTNESS_WARN
         self._leading_zero_radix = 8  # via property: leading_zero_radix
         self._sort_keys = SORT_SMART  # via property: sort_keys
 
@@ -3005,9 +3003,9 @@ class json_options(object):
             elif kw == 'html_safe' or kw == 'xml_safe':
                 if bool(val):
                     if self.always_escape_chars is None:
-                        self.always_escape_chars = set(u'<>/&')
+                        self.always_escape_chars = set('<>/&')
                     else:
-                        self.always_escape_chars.update(set(u'<>/&'))
+                        self.always_escape_chars.update(set('<>/&'))
             elif kw == 'always_escape':
                 if val:
                     if self.always_escape_chars is None:
@@ -3411,7 +3409,7 @@ class JSON(object):
     Likewise the 'allowed_behaviors' and 'forbidden_behaviors' list which
     behaviors will be allowed and which will not.  Call the allow()
     or forbid() methods to adjust these.
-    
+
     """
     _string_quotes = '"\''
 
@@ -3451,7 +3449,7 @@ class JSON(object):
                     '\\': '\\\\'}
     _optional_rev_escapes = {'/': '\\/'}  # only escaped if forced to do so
 
-    json_syntax_characters = u"{}[]\"\\,:0123456789.-+abcdefghijklmnopqrstuvwxyz \t\n\r"
+    json_syntax_characters = "{}[]\"\\,:0123456789.-+abcdefghijklmnopqrstuvwxyz \t\n\r"
 
     all_hook_names = ('decode_number', 'decode_float', 'decode_object',
                       'decode_array', 'decode_string',
@@ -3493,7 +3491,7 @@ class JSON(object):
 
         self._asciiencodable = \
             [32 <= c < 128 \
-             and not (chr(c) in self._rev_escapes) \
+             and chr(c) not in self._rev_escapes \
              and not unicodedata.category(chr(c)) in ['Cc', 'Cf', 'Zl', 'Zp']
              for c in range(0, 256)]
 
@@ -3642,10 +3640,10 @@ class JSON(object):
 
     def isws(self, c):
         """Determines if the given character is considered as white space.
-        
+
         Note that Javscript is much more permissive on what it considers
         to be whitespace than does JSON.
-        
+
         Ref. ECMAScript section 7.2
 
         """
@@ -3654,7 +3652,7 @@ class JSON(object):
         else:
             if not isinstance(c, str):
                 c = str(c)
-            if c in u' \t\n\r\f\v':
+            if c in ' \t\n\r\f\v':
                 return True
             import unicodedata
             return unicodedata.category(c) == 'Zs'
@@ -3667,7 +3665,7 @@ class JSON(object):
         """
         if c == '\r' or c == '\n':
             return True
-        if c == u'\u2028' or c == u'\u2029':  # unicodedata.category(c) in  ['Zl', 'Zp']
+        if c == '\u2028' or c == '\u2029':  # unicodedata.category(c) in  ['Zl', 'Zp']
             return True
         return False
 
@@ -3824,7 +3822,7 @@ class JSON(object):
                 return undefined
 
         # Check for radix-prefixed numbers
-        elif c == '0' and (buf.peek(1) in [u'x', u'X']):
+        elif c == '0' and (buf.peek(1) in ['x', 'X']):
             # ----- HEX NUMBERS 0x123
             prefix = buf.popstr(2)
             digits = buf.popwhile(helpers.is_hex_digit)
@@ -3839,7 +3837,7 @@ class JSON(object):
             state.update_integer_stats(ival, sign = sign, position = start_position)
             n = state.options.make_int(ival, sign, number_format = NUMBER_FORMAT_HEX)
             return n
-        elif c == '0' and (buf.peek(1) in [u'o', 'O']):
+        elif c == '0' and (buf.peek(1) in ['o', 'O']):
             # ----- NEW-STYLE OCTAL NUMBERS  0o123
             prefix = buf.popstr(2)
             digits = buf.popwhile(helpers.is_octal_digit)
@@ -3854,7 +3852,7 @@ class JSON(object):
             state.update_integer_stats(ival, sign = sign, position = start_position)
             n = state.options.make_int(ival, sign, number_format = NUMBER_FORMAT_OCTAL)
             return n
-        elif c == '0' and (buf.peek(1) in [u'b', 'B']):
+        elif c == '0' and (buf.peek(1) in ['b', 'B']):
             # ----- NEW-STYLE BINARY NUMBERS  0b1101
             prefix = buf.popstr(2)
             digits = buf.popwhile(helpers.is_binary_digit)
@@ -4009,14 +4007,14 @@ class JSON(object):
 
     def encode_number(self, n, state):
         """Encodes a Python numeric type into a JSON numeric literal.
-        
+
         The special non-numeric values of float('nan'), float('inf')
         and float('-inf') are translated into appropriate JSON
         literals.
-        
+
         Note that Python complex types are not handled, as there is no
         ECMAScript equivalent type.
-        
+
         """
         if isinstance(n, complex):
             if n.imag:
@@ -4128,7 +4126,7 @@ class JSON(object):
                                          position = highsur_position, outer_position = string_position,
                                          context = 'String')
                         should_stop = state.should_stop
-                        uc = u'\ufffd'  # replacement char
+                        uc = '\ufffd'  # replacement char
                     _append(uc)
                     high_surrogate = None
                     highsur_position = None
@@ -4138,7 +4136,7 @@ class JSON(object):
                                      position = highsur_position, outer_position = string_position,
                                      context = 'String')
                     should_stop = state.should_stop
-                    _append(u'\ufffd')  # replacement char
+                    _append('\ufffd')  # replacement char
                     high_surrogate = None
                     highsur_position = None
 
@@ -4249,7 +4247,7 @@ class JSON(object):
                                              outer_position = string_position,
                                              context = 'String')
                             should_stop = state.should_stop
-                            uc = u'\ufffd'  # replacement char
+                            uc = '\ufffd'  # replacement char
                         _append(uc)
                         high_surrogate = None
                         highsur_position = None
@@ -4270,7 +4268,7 @@ class JSON(object):
                                          outer_position = string_position,
                                          context = 'String')
                         should_stop = state.should_stop
-                        _append(u'\ufffd')  # replacement char
+                        _append('\ufffd')  # replacement char
                     else:
                         # Other chars go in as a str char
                         _append(helpers.safe_chr(codepoint))
@@ -4328,7 +4326,7 @@ class JSON(object):
             state.push_error('High str surrogate must be followed by a low surrogate',
                              position = highsur_position, outer_position = string_position,
                              context = 'String')
-            _append(u'\ufffd')  # replacement char
+            _append('\ufffd')  # replacement char
             high_surrogate = None
             highsur_position = None
 
@@ -5471,7 +5469,7 @@ class JSON(object):
         If a caller wishes to disable the calling of json_equivalent()
         methods, then subclass this class and override this method
         to just return None.
-        
+
         """
         if hasattr(obj, 'json_equivalent') \
                 and callable(getattr(obj, 'json_equivalent')):
@@ -5661,14 +5659,14 @@ def decode(txt, encoding = None, **kwargs):
     This will be successful if the input was encoded in any of UTF-8,
     UTF-16 (BE or LE), or UTF-32 (BE or LE), and of course plain ASCII
     works too.
-    
+
     Note though that if you know the character encoding, then you
     should convert to a str string yourself, or pass it the name
     of the 'encoding' to avoid the guessing made by the auto
     detection, as with
 
         python_object = demjson.decode( input_bytes, encoding='utf8' )
-    
+
     Callback hooks:
     ---------------
     You may supply callback hooks by using the hook name as the
